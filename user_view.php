@@ -270,19 +270,22 @@ foreach ($zipcodeRows as $zipRow) {
             display: inline-block;
         }
         
-        /* Responsive Design */
+        /* Responsive Design - Card Layout for Mobile */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+                background: #f5f5f5;
             }
 
             .container {
-                padding: 20px;
-                border-radius: 15px;
+                padding: 15px;
+                border-radius: 12px;
+                background: #f5f5f5;
             }
 
             h2 {
                 font-size: 22px;
+                margin-bottom: 15px;
             }
             
             /* Toolbar Stacked on mobile */
@@ -290,62 +293,160 @@ foreach ($zipcodeRows as $zipRow) {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 10px;
+                margin-bottom: 20px;
             }
 
             #hospitalSearch, #statusFilter {
                 width: 100%;
                 box-sizing: border-box;
+                padding: 12px 14px;
+                font-size: 15px;
             }
 
-            /* Table Responsive setup */
-            table, thead, tbody, th, td, tr { display: block; }
-            thead tr {
-                position: absolute; top: -9999px; left: -9999px; 
+            /* Table Responsive setup - Hide table structure */
+            table, thead, tbody, th, td, tr { 
+                display: block;
+                width: 100%;
             }
-            tr { 
-                border: 1px solid #e0e0e0; 
-                margin-bottom: 15px; 
-                border-radius: 12px; 
+
+            table {
+                background: transparent;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                height: 0;
+                width: 0;
+            }
+
+            /* Group header styling for mobile */
+            tr.group-header {
+                display: block;
+                background: transparent;
+                border: none;
+                margin: 20px 0 12px 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            tr.group-header td.group-header-cell {
+                padding: 12px 15px;
+                border-radius: 8px;
+                font-size: 15px;
+                text-align: left;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            /* Card styling for data rows on mobile */
+            tbody tr {
+                display: block;
+                border: none;
+                margin-bottom: 15px;
+                border-radius: 12px;
                 overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                box-shadow: 0 2px 12px rgba(0,0,0,0.1);
                 background: white;
+                padding: 0;
             }
             
-            /* Cell (td) layout */
-            td {
-                border: none; 
-                border-bottom: 1px solid #f0f0f0; 
-                position: relative;
-                padding-left: 120px; 
-                padding-top: 12px;
-                padding-bottom: 12px;
-                text-align: left; 
-                min-height: 45px; 
-                display: flex; 
-                align-items: center; 
+            tbody tr:last-of-type {
+                margin-bottom: 0;
             }
-            td:last-child {
+
+            /* Cell (td) layout - show as blocks */
+            tbody tr td {
+                display: block;
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+                position: relative;
+                padding: 14px 15px;
+                text-align: left;
+                min-height: auto;
+                background: white;
+                word-wrap: break-word;
+                word-break: break-word;
+            }
+
+            tbody tr td:last-child {
                 border-bottom: none;
             }
 
             /* Label (::before) styling */
-            td:before {
-                position: absolute; 
-                top: 0; 
-                left: 0;
-                width: 110px; 
-                padding: 12px 0 12px 15px; 
-                white-space: nowrap; 
+            tbody tr td::before {
                 content: attr(data-label);
-                font-weight: 600;
+                font-weight: 700;
+                color: #0b6ecf;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                display: block;
+                margin-bottom: 6px;
+                opacity: 0.9;
+            }
+
+            /* Status badge styling */
+            tbody tr td.status-1,
+            tbody tr td.status-2,
+            tbody tr td.status-3 {
                 text-align: left;
-                color: #4ecdc4;
+            }
+
+            /* Empty state */
+            tbody tr[style*="display: none"] {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .page-header {
+                gap: 8px;
+            }
+
+            .doctor-img, .ambulance-img {
+                max-width: 100px;
+            }
+
+            h2 {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
+            tbody tr {
+                margin-bottom: 12px;
+                border-radius: 10px;
+            }
+
+            tbody tr td {
+                padding: 12px 13px;
                 font-size: 13px;
-                display: flex;
-                align-items: center;
-                height: 100%;
-                box-sizing: border-box;
-                background: rgba(78, 205, 196, 0.05);
+            }
+
+            tbody tr td::before {
+                font-size: 11px;
+                margin-bottom: 5px;
+            }
+
+            #hospitalSearch, #statusFilter {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            tr.group-header td.group-header-cell {
+                padding: 10px 13px;
+                font-size: 14px;
             }
         }
     </style>
