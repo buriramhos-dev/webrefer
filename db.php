@@ -28,17 +28,40 @@ if ($host === 'localhost') {
 $tableName = "patient_records"; // ชื่อตารางหลัก (ใช้ร่วมกับโค้ดของคุณ)
 
 try {
-    // สร้าง PDO
-    $pdo = new PDO(
-        "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
-        $user,
-        $pass,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,  // ให้ error เป็น exception
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,  // คืนค่ามาแบบ array ชื่อคอลัมน์
-            PDO::ATTR_EMULATE_PREPARES => false           // ป้องกัน SQL Injection
-        ]
-    );
+    // พยายามเชื่อมต่อกับ host ที่กำหนด หากล้มเหลว ให้ลอง hosts สำรอง (เช่น mysql.railway.internal)
+    $attemptHosts = [$host];
+    // เพิ่มค่าจาก env ชื่ออื่นๆ เผื่อถูกตั้งชื่อแตกต่าง
+    $attemptHosts[] = getenv('MYSQL_HOST') ?: null;
+    $attemptHosts[] = getenv('DB_HOST') ?: null;
+    // Railway internal host
+    $attemptHosts[] = 'mysql.railway.internal';
+    $attemptHosts[] = 'mysql';
+
+    $attemptHosts = array_values(array_filter(array_unique($attemptHosts)));
+
+    $pdo = null;
+    $lastException = null;
+    foreach ($attemptHosts as $h) {
+        $dsn = "mysql:host={$h};port={$port};dbname={$dbname};charset=utf8mb4";
+        try {
+            $pdo = new PDO($dsn, $user, $pass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ]);
+            // ถ้าเชื่อมสำเร็จ ให้อัพเดต host และ break
+            $host = $h;
+            break;
+        } catch (PDOException $e) {
+            $lastException = $e;
+            // try next host
+        }
+    }
+
+    if (!$pdo) {
+        // ถ้ายังไม่สำเร็จ ให้โยน exception ล่าสุดออกมา
+        throw $lastException ?: new PDOException('Unable to connect to database');
+    }
 
 } catch (PDOException $e) {
     echo "Database connection failed: " . $e->getMessage();
