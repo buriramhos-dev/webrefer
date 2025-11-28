@@ -210,7 +210,7 @@ foreach ($zipcodeRows as $zipRow) {
         tr.group-header.status-group-1 td.group-header-cell {
             background: linear-gradient(135deg, #3da9fc 0%, #3e8deeff 100%);
         }
-ถ้า
+
         tr.group-header.status-group-2 td.group-header-cell {
             background: linear-gradient(135deg, #fda81fff 0%, #fda81fff 100%);
         }
